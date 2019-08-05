@@ -146,6 +146,12 @@ class Reminders
     if reminder.diff() <= 0
       msg.send "#{date} is past. can't remind you"
       return
+    if repeat and reminder.diff() < 3600*1000
+      msg.send "Yeaah... Not going to spam more often than once an hour."
+      return
+    if reminder.diff() > Math.pow(2, 31) - 1
+      msg.send "I'm quite javascript. Timers are uint32. No reminders for you >:("
+      return
 
     @queue reminder
     every = if repeat then ' every' else ''
@@ -185,7 +191,6 @@ class ReminderAt
     if reminder.diff() <= 0
       logger.warning "#{date} is past. can't remind you"
       return
-
     reminder
 
 module.exports = (robot) ->
